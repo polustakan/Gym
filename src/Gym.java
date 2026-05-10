@@ -24,8 +24,11 @@ public class Gym {
         subscriptionDurationBox.addItem("4");
         subscriptionDurationBox.addItem("5");
         subscriptionDurationBox.addItem("6");
-
-
-        // TODO: place custom component creation code here
+        subscriptionDurationBox.addItem("7");
+        subscriptionDurationBox.addItem("8");
+        subscriptionDurationBox.addItem("9");
+        subscriptionDurationBox.addItem("10");
+        subscriptionDurationBox.addItem("11");
+        subscriptionDurationBox.addItem("12");
     }
 }
