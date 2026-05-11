@@ -1,9 +1,11 @@
 import javax.swing.*;
+import java.util.Scanner;
 
 public class Gym {
     private JPanel mainPanel;
     private JTextField nameField;
     private JComboBox subscriptionDurationBox;
+    private JList databaseList;
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("Gym");
@@ -13,11 +15,14 @@ public class Gym {
         frame.setLocationRelativeTo(null);
         frame.setSize(400,500);
         frame.setVisible(true);
+        Scanner sc = new Scanner(System.in);
+        System.out.println("nigga");
+        Visitor v = new Visitor("Vladimir",sc.nextInt());
+        v.date();
     }
 
     private void createUIComponents() {
         subscriptionDurationBox = new JComboBox<>();
-        subscriptionDurationBox.addItem("");
         subscriptionDurationBox.addItem("1");
         subscriptionDurationBox.addItem("2");
         subscriptionDurationBox.addItem("3");
