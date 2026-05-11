@@ -19,6 +19,7 @@ public class Visitor {
     public  void dataWriter(){
         try {
             FileWriter fw = new FileWriter("database.txt");
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
