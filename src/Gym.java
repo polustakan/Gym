@@ -1,8 +1,11 @@
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Gym {
@@ -11,9 +14,111 @@ public class Gym {
     private JComboBox <Integer> subscriptionDurationBox;
     private JList <String> databaseList;
     private JButton addButton;
-    private JButton changeSubscriptionDurationButton;
     private JButton removeButton;
-    private JButton changeNameButton;
+    private JButton editButton;
+    private JButton clearButton;
+    private JButton endDateButton;
+    private DefaultListModel <String> model = new DefaultListModel<>();
+    private ArrayList <Visitor> visitors = new ArrayList<>();
+    private Object [] choise = {"Change name","Change subscription duration","Cancel"};
+
+    public Gym(){
+        databaseList.setModel(model);
+        dataReader();
+        addButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (nameField.getText().isEmpty()){
+                    error();
+                }else {
+                    Visitor visitor = new Visitor(nameField.getText(),(Integer) subscriptionDurationBox.getSelectedItem());
+                    if (confirmation()== JOptionPane.NO_OPTION) return;
+                    visitors.add(visitor);
+                    nameField.setText("");
+                    subscriptionDurationBox.setSelectedItem(1);
+                    modelList();
+                    dataWriter();
+                }
+            }
+        });
+        clearButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (confirmation()==JOptionPane.NO_OPTION)return;
+                visitors.clear();
+                model.clear();
+                dataClean();
+            }
+        });
+        removeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (index()==-1){
+                    return;
+                }
+                if (confirmation()==JOptionPane.NO_OPTION)return;
+                visitors.remove(index());
+                modelList();
+                dataWriter();
+            }
+        });
+        editButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (index()==-1){
+                    return;
+                }
+                int confirmation = JOptionPane.showOptionDialog(null, "Choose one of the variant", "choosing", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, choise, choise[2]);
+                if (confirmation==2)return;
+                Visitor visitor = visitors.get(index());
+                if (confirmation==0){
+                    String newName = JOptionPane.showInputDialog("Enter new name", visitor.getName());
+                    if (newName != null && !newName.isEmpty())visitor.setName(newName);
+                    modelList();
+                    dataWriter();
+                }else {
+                    try {
+                        int newDuration = Integer.parseInt(JOptionPane.showInputDialog("Input new subscription duration", visitor.getMonths()));
+                        if (newDuration>0)visitor.setMonths(newDuration);
+                        modelList();
+                        dataWriter();
+                    } catch (NumberFormatException ex) {
+                        error();
+                    }
+                }
+            }
+        });
+        endDateButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (index()==-1){
+                    return;
+                }
+                Visitor visitor = visitors.get(index());
+                visitor.date();
+            }
+        });
+
+    }
+    public void modelList(){
+        model.clear();
+        for (Visitor visitor:visitors) {
+            model.addElement(visitor.toString());
+        }
+    }
+
+    public int index (){
+        if (databaseList.getSelectedIndex()>-1){
+            return databaseList.getSelectedIndex();
+        }else {
+            error();
+            return -1;
+        }
+    }
+
+    public int confirmation(){return JOptionPane.showConfirmDialog(null,"Are you sure?","Confirmation",JOptionPane.YES_NO_OPTION);}
+
+    public void error(){JOptionPane.showMessageDialog(null,"Invalid input","Error",JOptionPane.ERROR_MESSAGE);}
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("Gym");
@@ -23,40 +128,24 @@ public class Gym {
         frame.setLocationRelativeTo(null);
         frame.setSize(600,300);
         frame.setVisible(true);
-        Scanner sc = new Scanner(System.in);
-        System.out.println("nigga");
-        Visitor v = new Visitor("Vladimir",sc.nextInt());
-        v.date();
     }
-    public class CustomDialogExample {
-        public static void main(String[] args) {
-            // 1. Create your custom button labels
-            String[] options = {"Delete Anyway", "Keep Employee"};
-
-            // 2. Use showOptionDialog to display them
-            int choice = JOptionPane.showOptionDialog(
-                    null,                       // Parent component
-                    "Confirm to delete employee", // Message
-                    "Are you sure?",             // Title
-                    JOptionPane.YES_NO_OPTION,   // Option type
-                    JOptionPane.QUESTION_MESSAGE, // Message type
-                    null,                       // Custom icon (null uses default)
-                    options,                    // The custom options array
-                    options[1]                  // Initial value (default button)
-            );
-
-            // 3. Handle the user's click
-            if (choice == 0) {
-                System.out.println("Employee deleted.");
-            } else {
-                System.out.println("Deletion canceled.");
-            }
-        }
-    }
-    public  void dataWriter(){
+    public void dataClean(){
         try {
             FileWriter fw = new FileWriter("database.txt");
+            fw.write("");
+            fw.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
+    }
+    public void dataWriter(){
+        try {
+            FileWriter fw = new FileWriter("database.txt");
+            for (Visitor visitor:visitors){
+                fw.write(visitor.toString()+"\n");
+            }
+            fw.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -67,7 +156,9 @@ public class Gym {
             Scanner scFile = new Scanner(fr);
             while (scFile.hasNextLine()) {
                 String[] parts = scFile.nextLine().split(",");
-
+                Visitor visitor = new Visitor(parts[0],Integer.parseInt(parts[1]));
+                visitors.add(visitor);
+                modelList();
             }
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);

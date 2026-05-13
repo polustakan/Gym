@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="Gym">
-  <grid id="27dc6" binding="mainPanel" layout-manager="GridLayoutManager" row-count="11" column-count="6" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+  <grid id="27dc6" binding="mainPanel" layout-manager="GridLayoutManager" row-count="12" column-count="6" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="0" left="0" bottom="0" right="0"/>
     <constraints>
       <xy x="20" y="20" width="628" height="400"/>
@@ -48,7 +48,7 @@
       </hspacer>
       <vspacer id="7d3ff">
         <constraints>
-          <grid row="10" column="3" row-span="1" col-span="3" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+          <grid row="11" column="3" row-span="1" col-span="3" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
         </constraints>
       </vspacer>
       <component id="86860" class="javax.swing.JComboBox" binding="subscriptionDurationBox" custom-create="true">
@@ -80,7 +80,7 @@
       </vspacer>
       <component id="9d5f2" class="javax.swing.JList" binding="databaseList">
         <constraints>
-          <grid row="6" column="2" row-span="4" col-span="2" vsize-policy="6" hsize-policy="2" anchor="0" fill="3" indent="0" use-parent-layout="false">
+          <grid row="6" column="2" row-span="5" col-span="2" vsize-policy="6" hsize-policy="2" anchor="0" fill="3" indent="0" use-parent-layout="false">
             <preferred-size width="150" height="50"/>
           </grid>
         </constraints>
@@ -91,15 +91,15 @@
           <grid row="6" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="Add Visitor"/>
+          <text value="Add visitor"/>
         </properties>
       </component>
-      <component id="167e7" class="javax.swing.JButton" binding="changeSubscriptionDurationButton" default-binding="true">
+      <component id="167e7" class="javax.swing.JButton" binding="clearButton">
         <constraints>
-          <grid row="9" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+          <grid row="10" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="Change subscription duration"/>
+          <text value="Clear memory"/>
         </properties>
       </component>
       <component id="5d666" class="javax.swing.JButton" binding="removeButton">
@@ -107,15 +107,23 @@
           <grid row="7" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="Delete Visitor"/>
+          <text value="Delete visitor"/>
         </properties>
       </component>
-      <component id="e4330" class="javax.swing.JButton" binding="changeNameButton" default-binding="true">
+      <component id="e4330" class="javax.swing.JButton" binding="editButton">
         <constraints>
           <grid row="8" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="Change name"/>
+          <text value="Enter changes"/>
+        </properties>
+      </component>
+      <component id="4d224" class="javax.swing.JButton" binding="endDateButton" default-binding="true">
+        <constraints>
+          <grid row="9" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="End date"/>
         </properties>
       </component>
     </children>
