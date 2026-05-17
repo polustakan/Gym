@@ -4,20 +4,33 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.Period;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Visitor {
     private String name;
     private int months;
+    private LocalDate start;
     Visitor(String name, int months){
         this.name = name;
         this.months = months;
+        this.start = LocalDate.now();
     }
+    Visitor(String name, int months,LocalDate start){
+        this.name = name;
+        this.months = months;
+        this.start = start;
+    }
+    Visitor(){}
+
     public void date (){
-        LocalDate now = LocalDate.now();
-        LocalDate end = now.plusMonths(months);
-        JOptionPane.showMessageDialog(null,"The "+name+"'s subscripion ends at "+end);
+        LocalDate end = start.plusMonths(months);
+        int confirm = JOptionPane.showConfirmDialog(null,"The "+name+"'s subscription ends at "+end+"\nDo you want know how much time until subscription ends?","Ending time",JOptionPane.YES_NO_OPTION);
+        if (confirm==JOptionPane.NO_OPTION)return;
+        Period period = Period.between(LocalDate.now(), end);
+        JOptionPane.showMessageDialog(null,"The "+name+"'s subscription ends after "+period.getMonths()+" months and "+period.getDays()+" days.");
     }
 
     public String getName() {return name;}
@@ -28,7 +41,10 @@ public class Visitor {
 
     public void setMonths(int months) {this.months = months;}
 
+    public LocalDate getStart() {return start;}
+
+    public void setStart(LocalDate start) {this.start = start;}
+
     @Override
-    public String toString() {return name+"," + months;
-    }
+    public String toString() {return name+"," + months+","+start;}
 }

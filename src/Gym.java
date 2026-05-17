@@ -5,6 +5,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -21,7 +23,6 @@ public class Gym {
     private DefaultListModel <String> model = new DefaultListModel<>();
     private ArrayList <Visitor> visitors = new ArrayList<>();
     private Object [] choise = {"Change name","Change subscription duration","Cancel"};
-
     public Gym(){
         databaseList.setModel(model);
         dataReader();
@@ -31,7 +32,14 @@ public class Gym {
                 if (nameField.getText().isEmpty()){
                     error();
                 }else {
-                    Visitor visitor = new Visitor(nameField.getText(),(Integer) subscriptionDurationBox.getSelectedItem());
+                    int confirmation = JOptionPane.showConfirmDialog(null,"Has this visitor start date?","Start date",JOptionPane.YES_NO_OPTION);
+                    Visitor visitor;
+                    if (confirmation==JOptionPane.YES_OPTION){
+                        visitor = new Visitor(nameField.getText(),(Integer)subscriptionDurationBox.getSelectedItem(),start());
+                    }
+                    else {
+                        visitor = new Visitor(nameField.getText(),(Integer)subscriptionDurationBox.getSelectedItem());
+                    }
                     if (confirmation()== JOptionPane.NO_OPTION) return;
                     visitors.add(visitor);
                     nameField.setText("");
@@ -53,9 +61,7 @@ public class Gym {
         removeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (index()==-1){
-                    return;
-                }
+                if (index()==-1)return;
                 if (confirmation()==JOptionPane.NO_OPTION)return;
                 visitors.remove(index());
                 modelList();
@@ -73,7 +79,7 @@ public class Gym {
                 Visitor visitor = visitors.get(index());
                 if (confirmation==0){
                     String newName = JOptionPane.showInputDialog("Enter new name", visitor.getName());
-                    if (newName != null && !newName.isEmpty())visitor.setName(newName);
+                    if (newName != null && !newName.isEmpty())visitor.setName(newName); else error();
                     modelList();
                     dataWriter();
                 }else {
@@ -104,6 +110,15 @@ public class Gym {
         model.clear();
         for (Visitor visitor:visitors) {
             model.addElement(visitor.toString());
+        }
+    }
+
+    public LocalDate start(){
+        try {
+            return LocalDate.parse(JOptionPane.showInputDialog("Enter start date in format YYYY-MM-DD"));
+        } catch (DateTimeParseException e) {
+            error();
+            return start();
         }
     }
 
@@ -156,12 +171,12 @@ public class Gym {
             Scanner scFile = new Scanner(fr);
             while (scFile.hasNextLine()) {
                 String[] parts = scFile.nextLine().split(",");
-                Visitor visitor = new Visitor(parts[0],Integer.parseInt(parts[1]));
+                Visitor visitor = new Visitor(parts[0],Integer.parseInt(parts[1]), LocalDate.parse(parts[2]));
                 visitors.add(visitor);
                 modelList();
             }
         } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
+            dataClean();
         }
     }
 
