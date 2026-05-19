@@ -33,14 +33,14 @@ public class Gym {
                     error();
                 }else {
                     int confirmation = JOptionPane.showConfirmDialog(null,"Has this visitor start date?","Start date",JOptionPane.YES_NO_OPTION);
-                    Visitor visitor;
+                    Visitor visitor = new Visitor(nameField.getText(),(Integer)subscriptionDurationBox.getSelectedItem());
                     if (confirmation==JOptionPane.YES_OPTION){
-                        visitor = new Visitor(nameField.getText(),(Integer)subscriptionDurationBox.getSelectedItem(),start());
+                        visitor.setStart(start());
+                    }else if (confirmation()== JOptionPane.NO_OPTION) return;
+                    while (visitor.dateFormatter()){
+                        error();
+                        visitor.setStart(start());
                     }
-                    else {
-                        visitor = new Visitor(nameField.getText(),(Integer)subscriptionDurationBox.getSelectedItem());
-                    }
-                    if (confirmation()== JOptionPane.NO_OPTION) return;
                     visitors.add(visitor);
                     nameField.setText("");
                     subscriptionDurationBox.setSelectedItem(1);
@@ -115,7 +115,7 @@ public class Gym {
 
     public LocalDate start(){
         try {
-            return LocalDate.parse(JOptionPane.showInputDialog("Enter start date in format YYYY-MM-DD"));
+            return LocalDate.parse(JOptionPane.showInputDialog("Enter start date in format YYYY-MM-DD",LocalDate.now()));
         } catch (DateTimeParseException e) {
             error();
             return start();
@@ -172,9 +172,12 @@ public class Gym {
             while (scFile.hasNextLine()) {
                 String[] parts = scFile.nextLine().split(",");
                 Visitor visitor = new Visitor(parts[0],Integer.parseInt(parts[1]), LocalDate.parse(parts[2]));
-                visitors.add(visitor);
-                modelList();
+                if (!visitor.dateFormatter()) {
+                    visitors.add(visitor);
+                    modelList();
+                }
             }
+            dataWriter();
         } catch (FileNotFoundException e) {
             dataClean();
         }

@@ -25,12 +25,24 @@ public class Visitor {
     }
     Visitor(){}
 
+    public boolean dateFormatter(){
+        LocalDate end = start.plusMonths(months);
+        Period period = Period.between(LocalDate.now(), end);
+        if (period.isNegative()||period.isZero()){
+            return true;}
+        else return false;
+    }
+
     public void date (){
         LocalDate end = start.plusMonths(months);
+        Period period = Period.between(LocalDate.now(), end);
+        if (period.isNegative()||period.isZero()){
+            JOptionPane.showMessageDialog(null,"The "+name+"'s subscription has been ended. \n Delete it please!!!","Ended subscription",JOptionPane.ERROR_MESSAGE);
+        } else {
         int confirm = JOptionPane.showConfirmDialog(null,"The "+name+"'s subscription ends at "+end+"\nDo you want know how much time until subscription ends?","Ending time",JOptionPane.YES_NO_OPTION);
         if (confirm==JOptionPane.NO_OPTION)return;
-        Period period = Period.between(LocalDate.now(), end);
         JOptionPane.showMessageDialog(null,"The "+name+"'s subscription ends after "+period.getMonths()+" months and "+period.getDays()+" days.");
+        }
     }
 
     public String getName() {return name;}
