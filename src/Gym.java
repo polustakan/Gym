@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
@@ -13,31 +14,34 @@ import java.util.Scanner;
 public class Gym {
     private JPanel mainPanel;
     private JTextField nameField;
-    private JComboBox <Integer> subscriptionDurationBox;
-    private JList <String> databaseList;
+    private JComboBox<Integer> subscriptionDurationBox;
+    private JList<String> databaseList;
     private JButton addButton;
     private JButton removeButton;
     private JButton editButton;
     private JButton clearButton;
     private JButton endDateButton;
-    private DefaultListModel <String> model = new DefaultListModel<>();
-    private ArrayList <Visitor> visitors = new ArrayList<>();
-    private Object [] choise = {"Change name","Change subscription duration","Cancel"};
-    public Gym(){
+    private DefaultListModel<String> model = new DefaultListModel<>();
+    private ArrayList<Visitor> visitors = new ArrayList<>();
+    private Object[] choise = {"Change name", "Change subscription duration", "Cancel"};
+
+    public Gym() {
         databaseList.setModel(model);
         dataReader();
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (nameField.getText().isEmpty()){
+                if (nameField.getText().isEmpty()) {
                     error();
-                }else {
-                    int confirmation = JOptionPane.showConfirmDialog(null,"Has this visitor start date?","Start date",JOptionPane.YES_NO_OPTION);
-                    Visitor visitor = new Visitor(nameField.getText(),(Integer)subscriptionDurationBox.getSelectedItem());
-                    if (confirmation==JOptionPane.YES_OPTION){
+                } else {
+                    if (nameContainsNumbers(nameField.getText())){error();return;}
+                    int confirmation = JOptionPane.showConfirmDialog(null, "Has this visitor start date?", "Start date", JOptionPane.YES_NO_OPTION);
+                    if (confirmation==JOptionPane.NO_OPTION) return;
+                    Visitor visitor = new Visitor(nameField.getText(), (Integer) subscriptionDurationBox.getSelectedItem());
+                    if (confirmation == JOptionPane.YES_OPTION) {
                         visitor.setStart(start());
-                    }else if (confirmation()== JOptionPane.NO_OPTION) return;
-                    while (visitor.dateFormatter()){
+                    } else if (confirmation() == JOptionPane.NO_OPTION) return;
+                    while (visitor.dateFormatter()) {
                         error();
                         visitor.setStart(start());
                     }
@@ -52,7 +56,7 @@ public class Gym {
         clearButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (confirmation()==JOptionPane.NO_OPTION)return;
+                if (confirmation() == JOptionPane.NO_OPTION) return;
                 visitors.clear();
                 model.clear();
                 dataClean();
@@ -61,8 +65,8 @@ public class Gym {
         removeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (index()==-1)return;
-                if (confirmation()==JOptionPane.NO_OPTION)return;
+                if (index() == -1) return;
+                if (confirmation() == JOptionPane.NO_OPTION) return;
                 visitors.remove(index());
                 modelList();
                 dataWriter();
@@ -71,21 +75,23 @@ public class Gym {
         editButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (index()==-1){
+                if (index() == -1) {
                     return;
                 }
                 int confirmation = JOptionPane.showOptionDialog(null, "Choose one of the variant", "choosing", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, choise, choise[2]);
-                if (confirmation==2)return;
+                if (confirmation == 2) return;
                 Visitor visitor = visitors.get(index());
-                if (confirmation==0){
+                if (confirmation == 0) {
                     String newName = JOptionPane.showInputDialog("Enter new name", visitor.getName());
-                    if (newName != null && !newName.isEmpty())visitor.setName(newName); else error();
+                    if (nameContainsNumbers(newName)){ error();return;}
+                    if (newName != null && !newName.isEmpty()) visitor.setName(newName);
+                    else error();
                     modelList();
                     dataWriter();
-                }else {
+                } else {
                     try {
                         int newDuration = Integer.parseInt(JOptionPane.showInputDialog("Input new subscription duration", visitor.getMonths()));
-                        if (newDuration>0)visitor.setMonths(newDuration);
+                        if (newDuration > 0) visitor.setMonths(newDuration);
                         modelList();
                         dataWriter();
                     } catch (NumberFormatException ex) {
@@ -97,7 +103,7 @@ public class Gym {
         endDateButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (index()==-1){
+                if (index() == -1) {
                     return;
                 }
                 Visitor visitor = visitors.get(index());
@@ -106,34 +112,39 @@ public class Gym {
         });
 
     }
-    public void modelList(){
+
+    public void modelList() {
         model.clear();
-        for (Visitor visitor:visitors) {
+        for (Visitor visitor : visitors) {
             model.addElement(visitor.toString());
         }
     }
 
-    public LocalDate start(){
+    public LocalDate start() {
         try {
-            return LocalDate.parse(JOptionPane.showInputDialog("Enter start date in format YYYY-MM-DD",LocalDate.now()));
+            return LocalDate.parse(JOptionPane.showInputDialog("Enter start date in format YYYY-MM-DD", LocalDate.now()));
         } catch (DateTimeParseException e) {
             error();
             return start();
         }
     }
 
-    public int index (){
-        if (databaseList.getSelectedIndex()>-1){
+    public int index() {
+        if (databaseList.getSelectedIndex() > -1) {
             return databaseList.getSelectedIndex();
-        }else {
+        } else {
             error();
             return -1;
         }
     }
 
-    public int confirmation(){return JOptionPane.showConfirmDialog(null,"Are you sure?","Confirmation",JOptionPane.YES_NO_OPTION);}
+    public int confirmation() {
+        return JOptionPane.showConfirmDialog(null, "Are you sure?", "Confirmation", JOptionPane.YES_NO_OPTION);
+    }
 
-    public void error(){JOptionPane.showMessageDialog(null,"Invalid input","Error",JOptionPane.ERROR_MESSAGE);}
+    public void error() {
+        JOptionPane.showMessageDialog(null, "Invalid input", "Error", JOptionPane.ERROR_MESSAGE);
+    }
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("Gym");
@@ -141,10 +152,11 @@ public class Gym {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setLocationRelativeTo(null);
-        frame.setSize(600,300);
+        frame.setSize(600, 300);
         frame.setVisible(true);
     }
-    public void dataClean(){
+
+    public void dataClean() {
         try {
             FileWriter fw = new FileWriter("database.txt");
             fw.write("");
@@ -154,24 +166,26 @@ public class Gym {
         }
 
     }
-    public void dataWriter(){
+
+    public void dataWriter() {
         try {
             FileWriter fw = new FileWriter("database.txt");
-            for (Visitor visitor:visitors){
-                fw.write(visitor.toString()+"\n");
+            for (Visitor visitor : visitors) {
+                fw.write(visitor.toString() + "\n");
             }
             fw.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
-    public void dataReader (){
+
+    public void dataReader() {
         try {
             FileReader fr = new FileReader("database.txt");
             Scanner scFile = new Scanner(fr);
             while (scFile.hasNextLine()) {
                 String[] parts = scFile.nextLine().split(",");
-                Visitor visitor = new Visitor(parts[0],Integer.parseInt(parts[1]), LocalDate.parse(parts[2]));
+                Visitor visitor = new Visitor(parts[0], Integer.parseInt(parts[1]), LocalDate.parse(parts[2]));
                 if (!visitor.dateFormatter()) {
                     visitors.add(visitor);
                     modelList();
@@ -181,6 +195,10 @@ public class Gym {
         } catch (FileNotFoundException e) {
             dataClean();
         }
+    }
+    public boolean nameContainsNumbers(String name){
+        if (name.matches("[a-zA-Z ]+"))return false;
+        else return true;
     }
 
     private void createUIComponents() {
@@ -198,4 +216,5 @@ public class Gym {
         subscriptionDurationBox.addItem(11);
         subscriptionDurationBox.addItem(12);
     }
+
 }
