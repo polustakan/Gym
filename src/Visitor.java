@@ -28,9 +28,7 @@ public class Visitor {
     public boolean dateFormatter(){
         LocalDate end = start.plusMonths(months);
         Period period = Period.between(LocalDate.now(), end);
-        if (period.isNegative()||period.isZero()){
-            return true;}
-        else return false;
+        return period.isZero()||period.isNegative();
     }
 
     public void date (){
