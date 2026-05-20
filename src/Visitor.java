@@ -40,7 +40,7 @@ public class Visitor {
             JOptionPane.showMessageDialog(null,"The "+name+"'s subscription has been ended. \n Delete it please!!!","Ended subscription",JOptionPane.ERROR_MESSAGE);
         } else {
         int confirm = JOptionPane.showConfirmDialog(null,"The "+name+"'s subscription ends at "+end+"\nDo you want know how much time until subscription ends?","Ending time",JOptionPane.YES_NO_OPTION);
-        if (confirm==JOptionPane.NO_OPTION)return;
+        if (confirm!=JOptionPane.YES_OPTION)return;
         JOptionPane.showMessageDialog(null,"The "+name+"'s subscription ends after "+period.getMonths()+" months and "+period.getDays()+" days.");
         }
     }
